@@ -1,4 +1,4 @@
-DB=presupuestos_municipales_2014
+DB=gobify-data_presupuestos-municipales
 
 createdb $DB
 

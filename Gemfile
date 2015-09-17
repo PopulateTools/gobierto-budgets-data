@@ -1,14 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'activesupport'
-gem 'activerecord'
+gem 'rails', '4.2.4'
 gem 'pg'
 
 group :development, :test do
   gem 'byebug'
-  gem 'spring'
 end
 
-group :test do
-  gem 'rspec-rails'
+group :development do
+  gem 'spring'
 end

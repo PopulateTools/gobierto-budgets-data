@@ -1,0 +1,68 @@
+{
+  "name": "presupuestos-municipales-2014",
+  "title": "Presupuestos Municipales España 2014",
+  "description": "Presupuestos Municipales España 2014",
+  "version": "1.0.0",
+  "datapackage_version": "1.0.0",
+  "sources": [
+    {
+      "name": "Ministerio de Hacienda y Administraciones Públicas",
+      "web": "http://serviciosweb.meh.es/apps/EntidadesLocales/",
+      "email": "sugerencias.presupuestoseell@minhap.es"
+    }
+  ],
+
+  "resources": [
+    {
+      "path": "./presupuestos-municipales-2014.csv",
+      "name": "presupuestos-municipales-2014",
+      "currency": "EUR",
+      "fiscalYear": "2014",
+      "dateLastUpdated": "22-12-2014",
+      "datePublished": "22-12-2014",
+      "status": "approved",
+      "fiscalPeriod": "2013-01-01/2014-01-01"
+
+      # TODO
+      "granularity": "aggregated",
+      "direction": "expenditure" # Both??
+
+      "standard": "prerelease-MayDay",
+      "type": "expenditure",
+
+      "schema": {
+        "primaryKey": "id",
+        "fields": [
+          {
+            "name": "id",
+            "type": "int"
+          },
+          {
+            "name": "admin",
+            "type": "string"
+          },
+          {
+            "name": "cofog",
+            "type": "string"
+          },
+          {
+            "name": "gfsmExpense",
+            "type": "string"
+          },
+          {
+            "name": "programID",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "int"
+          }
+        ]
+      }
+    }
+  ]
+}
