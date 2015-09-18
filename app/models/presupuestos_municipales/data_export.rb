@@ -7,16 +7,19 @@ class PresupuestosMunicipales::DataExport
   def export
     dest = "/tmp/presupuestos_municipales_#{@year}_#{@ine_place.id}/"
     database_name = ActiveRecord::Base.configurations[Rails.env]['database']
+    tables = %W{ tb_cuentasEconomica tb_cuentasProgramas tb_inventario tb_funcional tb_economica }
 
     FileUtils.rm_rf dest
     FileUtils.mkdir dest
 
-    FileUtils.cp Rails.root.join("./data/presupuestos_municipales/#{@year}/archive/tb_cuentasEconomica.sql.gz"), dest
-    FileUtils.cp Rails.root.join("./data/presupuestos_municipales/#{@year}/archive/tb_cuentasProgramas.sql.gz"), dest
+    # tb_cuentasEconomica
+    connection.execute %Q{COPY (SELECT * FROM "tb_cuentasEconomica_#{@year}") TO '#{dest}tb_cuentasEconomica.csv' DELIMITER ',' CSV HEADER;}
+
+    # tb_cuentasProgramas
+    connection.execute %Q{COPY (SELECT * FROM "tb_cuentasProgramas_#{@year}") TO '#{dest}tb_cuentasProgramas.csv' DELIMITER ',' CSV HEADER;}
 
     # tb_inventario
     connection.execute %Q{COPY (SELECT * FROM tb_inventario_#{@year} WHERE codente = '#{codente}') TO '#{dest}tb_inventario.csv' DELIMITER ',' CSV HEADER;}
-
     id = connection.execute("SELECT * FROM tb_inventario_#{@year} WHERE codente = '#{codente}'").first['id']
 
     # tb_funcional
@@ -25,8 +28,9 @@ class PresupuestosMunicipales::DataExport
     # tb_economica
     connection.execute %Q{COPY (SELECT * FROM tb_economica_#{@year} WHERE id = '#{id}') TO '#{dest}tb_economica.csv' DELIMITER ',' CSV HEADER;}
 
-    %W{ tb_inventario tb_funcional tb_economica }.each do |table_name|
-      %x{pg_dump #{database_name} -t #{table_name}_#{@year} -s | gzip > #{dest}/#{table_name}.sql.gz}
+    tables.each do |table_name|
+      puts table_name
+      %x{pg_dump #{database_name} -t \\"#{table_name}_#{@year}\\" -s | gzip > #{dest}/#{table_name}.sql.gz}
     end
 
     # load_data.sh
@@ -41,9 +45,11 @@ psql $DB < tb_economica.sql
 psql $DB < tb_funcional.sql
 psql $DB < tb_inventario.sql
 
-psql -c "COPY tb_inventario_#{@year} FROM '#{dest}tb_inventario.csv' DELIMITER ',' CSV HEADER;" $DB
-psql -c "COPY tb_funcional_#{@year} FROM '#{dest}tb_funcional.csv' DELIMITER ',' CSV HEADER;" $DB
-psql -c "COPY tb_economica_#{@year} FROM '#{dest}tb_economica.csv' DELIMITER ',' CSV HEADER;" $DB
+psql -c "COPY \\"tb_cuentasEconomica_#{@year}\\" FROM '#{dest}tb_cuentasEconomica.csv' DELIMITER ',' CSV HEADER;" $DB
+psql -c "COPY \\"tb_cuentasProgramas_#{@year}\\" FROM '#{dest}tb_cuentasProgramas.csv' DELIMITER ',' CSV HEADER;" $DB
+psql -c "COPY \\"tb_inventario_#{@year}\\"       FROM '#{dest}tb_inventario.csv'       DELIMITER ',' CSV HEADER;" $DB
+psql -c "COPY \\"tb_funcional_#{@year}\\"        FROM '#{dest}tb_funcional.csv'        DELIMITER ',' CSV HEADER;" $DB
+psql -c "COPY \\"tb_economica_#{@year}\\"        FROM '#{dest}tb_economica.csv'        DELIMITER ',' CSV HEADER;" $DB
 
 FILE
     fd.close
