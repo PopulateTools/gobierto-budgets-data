@@ -28,7 +28,7 @@ class PresupuestosMunicipales::DataExport
     tables = %W{ tb_cuentasEconomica tb_cuentasProgramas tb_inventario tb_funcional tb_economica }
 
     tables.each do |table_name|
-      %x{pg_dump #{database_name} -t \\"#{table_name}_#{@years.first}\\" -s > #{dest}/#{table_name}.sql}
+      %x{pg_dump #{database_name} --no-owner -t \\"#{table_name}_#{@years.first}\\" -s > #{dest}/#{table_name}.sql}
     end
 
     # load_schema.sh
