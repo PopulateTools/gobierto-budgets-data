@@ -25,10 +25,8 @@ class PresupuestosMunicipales::DataImport
     ActiveRecord::Base.connection.execute(<<SQL)
 update "tb_cuentasEconomica" set cdcta = LTRIM(RTRIM(cdcta));
 update "tb_cuentasEconomica" set nombre = LTRIM(RTRIM(nombre));
-update "tb_cuentasEconomica" set year = #{year} where year is null;
 update "tb_cuentasProgramas" set cdfgr = LTRIM(RTRIM(cdfgr));
 update "tb_cuentasProgramas" set nombre = LTRIM(RTRIM(nombre));
-update "tb_cuentasProgramas" set year = #{year} where year is null;
 update "tb_economica" set cdcta = LTRIM(RTRIM(cdcta));
 update "tb_economica" set year = #{year} where year is null;
 update "tb_funcional" set cdcta = LTRIM(RTRIM(cdcta));
@@ -49,9 +47,11 @@ SQL
 
     puts "Imported file #{file}"
 
-    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "#{table_name}" ADD COLUMN year smallint})
-    puts "Added column YEAR to #{table_name}"
-    puts
+    if table_name == 'tb_economica' || table_name == 'tb_funcional'
+      ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "#{table_name}" ADD COLUMN year smallint})
+      puts "Added column YEAR to #{table_name}"
+      puts
+    end
   end
 end
 

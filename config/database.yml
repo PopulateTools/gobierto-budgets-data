@@ -12,3 +12,8 @@ development:
 test:
   <<: *default
   database: gobify-data_test
+
+production:
+  <<: *default
+  database: gobify-data-budgets
+
