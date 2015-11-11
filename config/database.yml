@@ -7,7 +7,7 @@ default: &default
 
 development:
   <<: *default
-  database: gobify-data_development
+  database: gobify-data_development_with_2015
 
 test:
   <<: *default

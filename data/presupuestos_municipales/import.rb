@@ -40,8 +40,8 @@ SQL
   end
 
   def import_file(file, year)
-    table_name = File.basename(file, File.extname(file))
-    %x(gzip -d #{file} | psql #{ActiveRecord::Base.configurations[Rails.env]['database']})
+    table_name = File.basename(file, '.sql.gz')
+    %x(gunzip < #{file} | psql #{ActiveRecord::Base.configurations[Rails.env]['database']})
 
     puts "Imported file #{file}"
 
