@@ -49,8 +49,7 @@ SQL
 
     puts "Imported file #{file}"
 
-    ALTER TABLE \\"tb_cuentasEconomica\\" ADD COLUMN year smallint
-    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "#{table_name}" ADD COLUMN year smallint"})
+    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "#{table_name}" ADD COLUMN year smallint})
     puts "Added column YEAR to #{table_name}"
     puts
   end
