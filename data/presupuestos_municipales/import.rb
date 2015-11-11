@@ -23,15 +23,19 @@ class PresupuestosMunicipales::DataImport
     end
 
     ActiveRecord::Base.connection.execute(<<SQL)
-update "tb_cuentasEconomica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_cuentasEconomica_#{year}" set nombre = LTRIM(RTRIM(nombre));
-update "tb_cuentasProgramas_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
-update "tb_cuentasProgramas_#{year}" set nombre = LTRIM(RTRIM(nombre));
-update "tb_economica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_funcional_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_funcional_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
-update tb_inventario_#{year} set nombreente = LTRIM(RTRIM(nombreente));
-update tb_inventario_#{year} set nombreppal = LTRIM(RTRIM(nombreppal));
+update "tb_cuentasEconomica" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_cuentasEconomica" set nombre = LTRIM(RTRIM(nombre));
+update "tb_cuentasEconomica" set year = #{year} where year is null;
+update "tb_cuentasProgramas" set cdfgr = LTRIM(RTRIM(cdfgr));
+update "tb_cuentasProgramas" set nombre = LTRIM(RTRIM(nombre));
+update "tb_cuentasProgramas" set year = #{year} where year is null;
+update "tb_economica" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_economica" set year = #{year} where year is null;
+update "tb_funcional" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_funcional" set cdfgr = LTRIM(RTRIM(cdfgr));
+update "tb_funcional" set year = #{year} where year is null;
+update tb_inventario set nombreente = LTRIM(RTRIM(nombreente));
+update tb_inventario set nombreppal = LTRIM(RTRIM(nombreppal));
 SQL
   end
 
@@ -45,8 +49,9 @@ SQL
 
     puts "Imported file #{file}"
 
-    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "#{table_name}" RENAME TO "#{table_name}_#{year}"})
-    puts "Renamed table to #{table_name}_#{year}"
+    ALTER TABLE \\"tb_cuentasEconomica\\" ADD COLUMN year smallint
+    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "#{table_name}" ADD COLUMN year smallint"})
+    puts "Added column YEAR to #{table_name}"
     puts
   end
 end
