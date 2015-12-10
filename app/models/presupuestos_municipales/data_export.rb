@@ -2,7 +2,7 @@ class PresupuestosMunicipales::DataExport
   def initialize(ine_place)
     @ine_place = ine_place
     @destination_folder = "/tmp/presupuestos_municipales_#{@ine_place.slug}"
-    @years = (2010..2014)
+    @years = (2010..2015)
   end
 
   def export
@@ -28,7 +28,7 @@ class PresupuestosMunicipales::DataExport
     tables = %W{ tb_cuentasEconomica tb_cuentasProgramas tb_inventario tb_funcional tb_economica }
 
     tables.each do |table_name|
-      %x{pg_dump #{database_name} --no-owner -t \\"#{table_name}_#{@years.first}\\" -s > #{dest}/#{table_name}.sql}
+      %x{pg_dump #{database_name} -c --no-owner -t \\"#{table_name}_#{@years.last}\\" -s > #{dest}/#{table_name}.sql}
     end
 
     # load_schema.sh
@@ -43,15 +43,15 @@ psql $DB < tb_economica.sql
 psql $DB < tb_funcional.sql
 psql $DB < tb_inventario.sql
 
-psql -c "ALTER TABLE \\"tb_cuentasEconomica_#{@years.first}\\" RENAME TO \\"tb_cuentasEconomica\\"" $DB
+psql -c "ALTER TABLE \\"tb_cuentasEconomica_#{@years.last}\\" RENAME TO \\"tb_cuentasEconomica\\"" $DB
 psql -c "ALTER TABLE \\"tb_cuentasEconomica\\" ADD COLUMN year smallint" $DB
-psql -c "ALTER TABLE \\"tb_cuentasProgramas_#{@years.first}\\" RENAME TO \\"tb_cuentasProgramas\\"" $DB
+psql -c "ALTER TABLE \\"tb_cuentasProgramas_#{@years.last}\\" RENAME TO \\"tb_cuentasProgramas\\"" $DB
 psql -c "ALTER TABLE \\"tb_cuentasProgramas\\" ADD COLUMN year smallint" $DB
-psql -c "ALTER TABLE \\"tb_economica_#{@years.first}\\" RENAME TO \\"tb_economica\\"" $DB
+psql -c "ALTER TABLE \\"tb_economica_#{@years.last}\\" RENAME TO \\"tb_economica\\"" $DB
 psql -c "ALTER TABLE \\"tb_economica\\" ADD COLUMN year smallint" $DB
-psql -c "ALTER TABLE \\"tb_funcional_#{@years.first}\\" RENAME TO \\"tb_funcional\\"" $DB
+psql -c "ALTER TABLE \\"tb_funcional_#{@years.last}\\" RENAME TO \\"tb_funcional\\"" $DB
 psql -c "ALTER TABLE \\"tb_funcional\\" ADD COLUMN year smallint" $DB
-psql -c "ALTER TABLE \\"tb_inventario_#{@years.first}\\" RENAME TO \\"tb_inventario\\"" $DB
+psql -c "ALTER TABLE \\"tb_inventario_#{@years.last}\\" RENAME TO \\"tb_inventario\\"" $DB
 psql -c "ALTER TABLE \\"tb_inventario\\" ADD COLUMN year smallint" $DB
 FILE
     fd.close

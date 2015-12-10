@@ -1,7 +1,7 @@
 class PresupuestosMunicipales::DataImport
 
   def import_in_database!
-    years = [2010,2011,2012,2013,2014,2015]
+    # years = [2010,2011,2012,2013,2014,2015]
     Dir.foreach(File.expand_path('../', __FILE__)) do |directory|
       next if ['.', '..'].include?(directory)
       year = directory
@@ -12,29 +12,30 @@ class PresupuestosMunicipales::DataImport
       end
     end
 
-    create_yearable_tables
-
-    years.each do |year|
-      sql = <<-SQL
-insert into tb_economica (id, idente, tipreig, cdcta, importe, year)
-select id, idente, tipreig, cdcta, importe, #{year} as year
-FROM tb_economica_#{year}
-SQL
-
-      ActiveRecord::Base.connection.execute(sql)
-
-      sql = <<-SQL
-insert into tb_funcional (id, idente, cdcta, cdfgr, importe, year)
-select id, idente, cdcta, cdfgr, importe, #{year} as year
-FROM tb_funcional_#{year}
-SQL
-
-      ActiveRecord::Base.connection.execute(sql)
-    end
-
-    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "tb_cuentasEconomica_2015" RENAME TO "tb_cuentasEconomica"})
-    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "tb_cuentasProgramas_2015" RENAME TO "tb_cuentasProgramas"})
-    ActiveRecord::Base.connection.execute(%Q{ALTER TABLE tb_inventario_2015 RENAME TO tb_inventario})
+    # create_yearable_tables
+    #
+    # TODO: we don't need this, because we read the data from each year table
+    #     years.each do |year|
+    #       sql = <<-SQL
+    # insert into tb_economica (id, idente, tipreig, cdcta, importe, year)
+    # select id, idente, tipreig, cdcta, importe, #{year} as year
+    # FROM tb_economica_#{year}
+    # SQL
+    # 
+    #       ActiveRecord::Base.connection.execute(sql)
+    # 
+    #       sql = <<-SQL
+    # insert into tb_funcional (id, idente, cdcta, cdfgr, importe, year)
+    # select id, idente, cdcta, cdfgr, importe, #{year} as year
+    # FROM tb_funcional_#{year}
+    # SQL
+    # 
+    #       ActiveRecord::Base.connection.execute(sql)
+    #     end
+    # TODO: do we need to rename the tables?
+    # ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "tb_cuentasEconomica_2015" RENAME TO "tb_cuentasEconomica"})
+    # ActiveRecord::Base.connection.execute(%Q{ALTER TABLE "tb_cuentasProgramas_2015" RENAME TO "tb_cuentasProgramas"})
+    # ActiveRecord::Base.connection.execute(%Q{ALTER TABLE tb_inventario_2015 RENAME TO tb_inventario})
 
     # TODO: remove the tables that are not used anymore (the tables with a year in the suffix)
   end
@@ -43,6 +44,7 @@ SQL
 
   def import_year_data(folder, year)
     base_path = folder + '/archive/'
+
     Dir.foreach(base_path) do |file|
       if relevant_file?(file)
         import_file(base_path + file, year)
@@ -103,6 +105,5 @@ SQL
     ActiveRecord::Base.connection.execute(sql)
   end
 end
-
 
 PresupuestosMunicipales::DataImport.new.import_in_database!
