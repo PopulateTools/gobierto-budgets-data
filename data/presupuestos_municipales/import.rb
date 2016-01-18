@@ -22,11 +22,15 @@ class PresupuestosMunicipales::DataImport
   def import_year_data(folder, year)
     base_path = folder + "/#{@what}/"
 
+    executed = false
     Dir.foreach(base_path) do |file|
       if relevant_file?(file)
+        executed = true
         import_file(base_path + file, year)
       end
     end
+
+    return if !executed
 
     # TODO: clean tb_remanente;
     db.execute(<<SQL)
