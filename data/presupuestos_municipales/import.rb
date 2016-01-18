@@ -15,11 +15,6 @@ class PresupuestosMunicipales::DataImport
         import_year_data(directory, year)
       end
     end
-
-    # Clean tables
-    db.execute(<<SQL)
--- drop table
-SQL
   end
 
   private
@@ -33,6 +28,7 @@ SQL
       end
     end
 
+    # TODO: clean tb_remanente;
     db.execute(<<SQL)
 update "tb_cuentasEconomica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
 update "tb_cuentasEconomica_#{year}" set nombre = LTRIM(RTRIM(nombre));
