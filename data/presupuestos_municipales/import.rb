@@ -32,7 +32,6 @@ class PresupuestosMunicipales::DataImport
 
     return if !executed
 
-    # TODO: clean tb_remanente;
     db.execute(<<SQL)
 update "tb_cuentasEconomica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
 update "tb_cuentasEconomica_#{year}" set nombre = LTRIM(RTRIM(nombre));
