@@ -1,4 +1,4 @@
-class PresupuestosMunicipales::DataImport
+class DataImport
 
   def initialize(database, what)
     @database = database
@@ -20,7 +20,7 @@ class PresupuestosMunicipales::DataImport
   private
 
   def import_year_data(folder, year)
-    base_path = folder + "/#{@what}/"
+    base_path = "#{folder}/#{@what}/"
 
     executed = false
     Dir.foreach(base_path) do |file|
@@ -74,5 +74,5 @@ what = ARGV[1].strip
 raise 'Missing database name' if database.blank?
 raise 'Invalid type option' unless %{ planned executed }.include?(what)
 
-importer = PresupuestosMunicipales::DataImport.new(database, what)
+importer = DataImport.new(database, what)
 importer.import_in_database
