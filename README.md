@@ -1,0 +1,72 @@
+# Gobierto budgets data
+
+This repository contains the data and the scripts needed to load the municipalities data from Spain
+into a Postgres database. The data is from years 2010 to 2015 and includes forecast and execution.
+
+**Important**: the data contained in this repository has been updated on 30/12/2015.
+
+## How to load the data
+
+### Setup
+
+1 - Install Ruby 2.3.0
+
+2 - Create a file `config/database.yml`. You can base it on `config/database.yml.example`
+
+3 - Run `bundle install`
+
+4 - Create two databases, one for forecast data, and other for execution data. In postgres you can
+do it using `createdb`. Example:
+  - `createdb budgets-forecast`
+  - `createdb budgets-execution`
+
+5 - Run the script:
+  - To load the forecast data: `$ bin/rails runner import.rb budgets-forecast planned`
+  - To load the forecast data: `$ bin/rails runner import.rb budgets-execution executed`
+
+## Understanding the data
+
+_Ministerio de Hacienda y Administraciones Públicas_ publishes in their website [the data](http://serviciosweb.meh.es/apps/EntidadesLocales/) of municipalities budgets, both the planned budget and the executed one. They have a couple of methodology notes in case you are interested in: [Nota Metodológica](http://www.minhap.gob.es/Documentacion/Publico/DGCFEL/InstruccionesAplicaciones/NOTA%20METODOL%C3%93GICA.Presupuestos%20y%20Liquidaciones.pdf) and [Metodología Base de datos Access](http://serviciosweb.meh.es/apps/EntidadesLocales/publicaciones/eell/Metodolog%C3%ADa%20base%20de%20Datos%20Access.doc).  The data published is in Microsoft Access format.
+
+We, at Gobierto, have followed these steps to convert it to SQL, which is a better format to
+distribute the data.
+
+1 - Fetch all the data from 2010 to 2015. There are separated files for each year and for forecast
+and execution.
+
+2 - Using an external application, we have converted the data to Postgres format.
+
+3 - We have put each SQL file, compressed in GZip format, into a folder in
+`data/presupuestos_municipales` with the name of the yar. There are two sub-folders named
+`executed/` and `planned/`.
+
+There are five main tables. We are not going to describe them completely, but if you want a deeper
+description we recommend you to read the documentation mentioned above.
+
+- `tb_inventario`: an inventory table with the list of local entities. An entity can be the
+  municipality itself and other local institutions depending on it. When we import the data, we
+  aggregate all those sub-budgets into the municipality.
+
+- `tb_funcional`: budgeting data organized using the functional classifcation. In the functional
+  classification there are only expenses and not income.
+
+- `tb_cuentasProgramas`: list of functional categories the budgets are organized.
+
+- `tb_economica`: budgeting data organized using the functional classifcation. This classification
+  includes both expenses and income.
+
+- `tb_cuentasEconomica`: list of economic categories the budgets are organized.
+
+Both planned and executed data contain the same structure.
+
+## Suggestions
+
+Please, contact us at `fernando@populate.tools`.
+
+## Contributing
+
+Follow the regular steps: create and issue, or suggest a change with a PR.
+
+## Credits
+
+Gobierto, 2016
