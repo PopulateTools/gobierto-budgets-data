@@ -6,11 +6,11 @@ class DataImport
   end
 
   def import_in_database
-    Dir.foreach(File.expand_path('../', __FILE__)) do |directory|
+    Dir.foreach(Rails.root.join('data/presupuestos_municipales')) do |directory|
       next if ['.', '..'].include?(directory)
       year = directory
 
-      directory = File.expand_path('../' + directory, __FILE__)
+      directory = Rails.root.join("data/presupuestos_municipales/#{year}")
       if File.directory?(directory)
         import_year_data(directory, year)
       end
@@ -67,12 +67,3 @@ SQL
             end
   end
 end
-
-database = ARGV[0].strip
-what = ARGV[1].strip
-
-raise 'Missing database name' if database.blank?
-raise 'Invalid type option' unless %{ planned executed }.include?(what)
-
-importer = DataImport.new(database, what)
-importer.import_in_database
