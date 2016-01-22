@@ -1,7 +1,7 @@
 # Gobierto budgets data
 
 This repository contains the data and the scripts needed to load the municipalities data from Spain
-into a Postgres database. The data is from years 2010 to 2015 and includes forecast and execution.
+into a Postgres database. The data is from years 2010 to 2015 and includes planned and executed.
 
 **Important**: the data contained in this repository has been updated on 30/12/2015.
 
@@ -15,14 +15,14 @@ into a Postgres database. The data is from years 2010 to 2015 and includes forec
 
 3 - Run `bundle install`
 
-4 - Create two databases, one for forecast data, and other for execution data. In postgres you can
+4 - Create two databases, one for planned data, and other for executed data. In postgres you can
 do it using `createdb`. Example:
-  - `createdb budgets-forecast`
-  - `createdb budgets-execution`
+  - `createdb budgets-planned`
+  - `createdb budgets-executed`
 
 5 - Run the script:
-  - To load the forecast data: `$ bin/rails runner import.rb budgets-forecast planned`
-  - To load the forecast data: `$ bin/rails runner import.rb budgets-execution executed`
+  - To load the planned data: `$ bin/rails runner import.rb budgets-planned planned`
+  - To load the planned data: `$ bin/rails runner import.rb budgets-executed executed`
 
 ## Understanding the data
 
@@ -31,8 +31,8 @@ _Ministerio de Hacienda y Administraciones Públicas_ publishes in their website
 We, at Gobierto, have followed these steps to convert it to SQL, which is a better format to
 distribute the data.
 
-1 - Fetch all the data from 2010 to 2015. There are separated files for each year and for forecast
-and execution.
+1 - Fetch all the data from 2010 to 2015. There are separated files for each year and for planned
+and executed.
 
 2 - Using an external application, we have converted the data to Postgres format.
 
@@ -57,7 +57,44 @@ description we recommend you to read the documentation mentioned above.
 
 - `tb_cuentasEconomica`: list of economic categories the budgets are organized.
 
-Both planned and executed data contain the same structure.
+Both planned and executed data contain the same structure. At the end of the import you should have the following tables in both databases:
+
+```
+budgets-executed=# \d
+                  List of relations
+ Schema |           Name           | Type  |  Owner
+--------+--------------------------+-------+----------
+ public | tb_cuentasEconomica_2010 | table | wadus
+ public | tb_cuentasEconomica_2011 | table | wadus
+ public | tb_cuentasEconomica_2012 | table | wadus
+ public | tb_cuentasEconomica_2013 | table | wadus
+ public | tb_cuentasEconomica_2014 | table | wadus
+ public | tb_cuentasProgramas_2010 | table | wadus
+ public | tb_cuentasProgramas_2011 | table | wadus
+ public | tb_cuentasProgramas_2012 | table | wadus
+ public | tb_cuentasProgramas_2013 | table | wadus
+ public | tb_cuentasProgramas_2014 | table | wadus
+ public | tb_cuentasRemanente_2010 | table | wadus
+ public | tb_cuentasRemanente_2011 | table | wadus
+ public | tb_cuentasRemanente_2012 | table | wadus
+ public | tb_cuentasRemanente_2013 | table | wadus
+ public | tb_cuentasRemanente_2014 | table | wadus
+ public | tb_economica_2010        | table | wadus
+ public | tb_economica_2011        | table | wadus
+ public | tb_economica_2012        | table | wadus
+ public | tb_economica_2013        | table | wadus
+ public | tb_economica_2014        | table | wadus
+ public | tb_funcional_2010        | table | wadus
+ public | tb_funcional_2011        | table | wadus
+ public | tb_funcional_2012        | table | wadus
+ public | tb_funcional_2013        | table | wadus
+ public | tb_funcional_2014        | table | wadus
+ public | tb_inventario_2010       | table | wadus
+ public | tb_inventario_2011       | table | wadus
+ public | tb_inventario_2012       | table | wadus
+ public | tb_inventario_2013       | table | wadus
+ public | tb_inventario_2014       | table | wadus
+```
 
 ## Suggestions
 
