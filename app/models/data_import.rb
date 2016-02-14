@@ -40,6 +40,9 @@ update "tb_cuentasProgramas_#{year}" set nombre = LTRIM(RTRIM(nombre));
 update "tb_economica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
 update "tb_funcional_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
 update "tb_funcional_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
+update "tb_economica_cons_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_funcional_cons_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_funcional_cons_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
 update tb_inventario_#{year} set nombreente = LTRIM(RTRIM(nombreente));
 update tb_inventario_#{year} set nombreppal = LTRIM(RTRIM(nombreppal));
 SQL
