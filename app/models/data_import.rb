@@ -60,15 +60,15 @@ SQL
   def import_file(file, year)
     table_name = File.basename(file, '.sql.gz')
     %x(gunzip -kf #{file})
-    
+
     dir = File.join(File.dirname(file),"")
-    sql_file = dir + File.basename(file, '.gz')   
+    sql_file = dir + File.basename(file, '.gz')
     first_line = File.readlines(sql_file).first.chomp
     if not first_line =~ /begin/i
       import_speedup(sql_file,'BEGIN;', 'COMMIT;')
       puts "Optimized sql backup for speedup"
     end
-    
+
     %x(cat #{sql_file} | psql #{@database})
     puts "Imported file #{file} in database #{@database}"
 
@@ -85,7 +85,7 @@ SQL
       contents = fd.read
       new_contents = first_srt + "\n" + contents + "\n" + last_str
     end
-    File.open(file, 'w') do |fd| 
+    File.open(file, 'w') do |fd|
       fd.write(new_contents)
   end
 end
