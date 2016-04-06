@@ -26,7 +26,7 @@ do it using `createdb`. Example:
 
 ## Understanding the data
 
-_Ministerio de Hacienda y Administraciones Públicas_ publishes in their website [the data](http://serviciosweb.meh.es/apps/EntidadesLocales/) of municipalities budgets, both the planned budget and the executed one. They have a couple of methodology notes in case you are interested in: [Nota Metodológica](http://www.minhap.gob.es/Documentacion/Publico/DGCFEL/InstruccionesAplicaciones/NOTA%20METODOL%C3%93GICA.Presupuestos%20y%20Liquidaciones.pdf) and [Metodología Base de datos Access](http://serviciosweb.meh.es/apps/EntidadesLocales/publicaciones/eell/Metodolog%C3%ADa%20base%20de%20Datos%20Access.doc).  The data published is in Microsoft Access format.
+_Ministerio de Hacienda y Administraciones Públicas_ publishes in their website [the data](http://serviciostelematicosext.minhap.gob.es/SGCAL/entidadeslocales/) of municipalities budgets, both the planned budget and the executed one. They have a couple of methodology notes in case you are interested in: [Nota Metodológica](http://www.minhap.gob.es/Documentacion/Publico/DGCFEL/InstruccionesAplicaciones/NOTA%20METODOL%C3%93GICA.Presupuestos%20y%20Liquidaciones.pdf) and [Metodología Base de datos Access](http://serviciosweb.meh.es/apps/EntidadesLocales/publicaciones/eell/Metodolog%C3%ADa%20base%20de%20Datos%20Access.doc).  The data published is in Microsoft Access format.
 
 We, at Gobierto, have followed these steps to convert it to SQL, which is a better format to
 distribute the data.
