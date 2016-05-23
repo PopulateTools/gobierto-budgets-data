@@ -9,7 +9,7 @@ into a Postgres database. The data is from years 2010 to 2015 and includes plann
 
 ### Setup
 
-1 - Install Ruby 2.3.0
+1 - Install Ruby 2.3.1
 
 2 - Create a file `config/database.yml`. You can base it on `config/database.yml.example`
 
