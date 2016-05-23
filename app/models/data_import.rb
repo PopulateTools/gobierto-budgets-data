@@ -1,6 +1,9 @@
 class DataImport
 
   def initialize(database, what)
+    raise 'Missing database name' if database.blank?
+    raise 'Invalid type option' unless %{ planned executed }.include?(what)
+
     @database = database
     @what = what
   end
@@ -30,27 +33,10 @@ class DataImport
       end
     end
 
-    return if !executed
-
-    if @database == 'budgets-planned'
-       db.execute(<<SQL)
-update "tb_economica_cons_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_funcional_cons_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_funcional_cons_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
-SQL
+    if executed
+      format_planned_data(year)
+      format_data(year)
     end
-
-    db.execute(<<SQL)
-update "tb_cuentasEconomica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_cuentasEconomica_#{year}" set nombre = LTRIM(RTRIM(nombre));
-update "tb_cuentasProgramas_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
-update "tb_cuentasProgramas_#{year}" set nombre = LTRIM(RTRIM(nombre));
-update "tb_economica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_funcional_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
-update "tb_funcional_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
-update tb_inventario_#{year} set nombreente = LTRIM(RTRIM(nombreente));
-update tb_inventario_#{year} set nombreppal = LTRIM(RTRIM(nombreppal));
-SQL
   end
 
   def relevant_file?(file)
@@ -66,7 +52,6 @@ SQL
     first_line = File.readlines(sql_file).first.chomp
     if not first_line =~ /begin/i
       import_speedup(sql_file,'BEGIN;', 'COMMIT;')
-      puts "Optimized sql backup for speedup"
     end
 
     %x(cat #{sql_file} | psql #{@database})
@@ -87,13 +72,37 @@ SQL
     end
     File.open(file, 'w') do |fd|
       fd.write(new_contents)
+    end
   end
-end
 
   def db
     @db ||= begin
               ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env].merge('database' => @database)
               ActiveRecord::Base.connection
             end
+  end
+
+  def format_planned_data(year)
+    if @database == 'budgets-planned'
+       db.execute(<<SQL)
+update "tb_economica_cons_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_funcional_cons_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_funcional_cons_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
+SQL
+    end
+  end
+
+  def format_data(year)
+    db.execute(<<SQL)
+update "tb_cuentasEconomica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_cuentasEconomica_#{year}" set nombre = LTRIM(RTRIM(nombre));
+update "tb_cuentasProgramas_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
+update "tb_cuentasProgramas_#{year}" set nombre = LTRIM(RTRIM(nombre));
+update "tb_economica_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_funcional_#{year}" set cdcta = LTRIM(RTRIM(cdcta));
+update "tb_funcional_#{year}" set cdfgr = LTRIM(RTRIM(cdfgr));
+update tb_inventario_#{year} set nombreente = LTRIM(RTRIM(nombreente));
+update tb_inventario_#{year} set nombreppal = LTRIM(RTRIM(nombreppal));
+SQL
   end
 end
