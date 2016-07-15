@@ -3,7 +3,7 @@
 This repository contains the data and the scripts needed to load the municipalities data from Spain
 into a Postgres database. The data is from years 2010 to 2015 and includes planned and executed.
 
-**Important**: the data contained in this repository has been updated on 30/12/2015.
+**Important**: the data contained in this repository has been updated on 15/07/2016.
 
 ## How to load the data
 
@@ -22,7 +22,7 @@ do it using `createdb`. Example:
 
 5 - Run the script:
   - To load the planned data: `$ bin/rails runner import.rb budgets-planned planned`
-  - To load the planned data: `$ bin/rails runner import.rb budgets-executed executed`
+  - To load the executed data: `$ bin/rails runner import.rb budgets-executed executed`
 
 ## Understanding the data
 
