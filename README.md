@@ -1,7 +1,7 @@
 # Gobierto budgets data
 
 This repository contains the data and the scripts needed to load the municipalities data from Spain
-into a Postgres database. The data is from years 2010 to 2015 and includes planned and executed.
+into a Postgres database. The data is from years 2010 to 2016 and includes planned and executed.
 
 **Important**: the data contained in this repository has been updated on 15/07/2016.
 
@@ -31,7 +31,7 @@ _Ministerio de Hacienda y Administraciones Públicas_ publishes in their website
 We, at Gobierto, have followed these steps to convert it to SQL, which is a better format to
 distribute the data.
 
-1 - Fetch all the data from 2010 to 2015. There are separated files for each year and for planned
+1 - Fetch all the data from 2010 to 2016. There are separated files for each year and for planned
 and executed.
 
 2 - Using an external application, we have converted the data to Postgres format.
