@@ -24,6 +24,7 @@ class DataImport
 
   def import_year_data(folder, year)
     base_path = "#{folder}/#{@what}/"
+    return unless File.directory?(base_path)
 
     executed = false
     Dir.foreach(base_path) do |file|
