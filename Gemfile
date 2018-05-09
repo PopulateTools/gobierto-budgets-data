@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.6'
-gem 'pg'
+gem "pg", "~> 0.19"
+gem "rails", "~> 5.2.0"
+gem "bootsnap"
+gem 'listen'
 
 group :development, :test do
   gem 'byebug'
