@@ -46,7 +46,7 @@ class DataImport
 
   def import_file(file, year)
     table_name = File.basename(file, '.sql.gz')
-    %x(gunzip -kf #{file})
+    %x(gunzip -f #{file})
 
     dir = File.join(File.dirname(file),"")
     sql_file = dir + File.basename(file, '.gz')
