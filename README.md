@@ -3,13 +3,13 @@
 This repository contains the data and the scripts needed to load the municipalities data from Spain
 into a Postgres database. The data is from years 2010 to 2016 and includes planned and executed.
 
-**Important**: the data contained in this repository has been updated on 15/07/2016.
+**Important**: the data contained in this repository has been updated on 02/07/2018.
 
 ## How to load the data
 
 ### Setup
 
-1 - Install Ruby 2.3.1
+1 - Install Ruby 2.5.1
 
 2 - Create a file `config/database.yml`. You can base it on `config/database.yml.example`
 
@@ -106,4 +106,4 @@ Follow the regular steps: create and issue, or suggest a change with a PR.
 
 ## Credits
 
-Gobierto, 2016
+Gobierto, 2018
