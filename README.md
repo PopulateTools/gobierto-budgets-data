@@ -26,7 +26,7 @@ do it using `createdb`. Example:
 
 ## Understanding the data
 
-_Ministerio de Hacienda y Administraciones Públicas_ publishes in their website [the data](https://serviciostelematicosext.minhap.gob.es/SGCAL/CONPREL) of municipalities budgets, both the planned budget and the executed one. They have a couple of methodology notes in case you are interested in: [Nota Metodológica](https://serviciostelematicosext.minhap.gob.es/SGCAL/CONPREL/Consulta/DescargaFichero?CCAA=&TipoDato=Presupuestos&Ejercicio=2019&TipoPublicacion=Access) and [Metodología Base de datos Access](https://serviciostelematicosext.minhap.gob.es/SGCAL/CONPREL/Consulta/DescargaFicheroMetodologico?idFichero=809).  The data published is in Microsoft Access format.
+_Ministerio de Hacienda y Administraciones Públicas_ publishes in their website [the data](https://serviciostelematicosext.hacienda.gob.es/SGFAL/CONPREL) of municipalities budgets, both the planned budget and the executed one. They have a couple of methodology notes in case you are interested in: [Nota Metodológica](https://serviciostelematicosext.hacienda.gob.es/SGCAL/CONPREL/Consulta/DescargaFichero?CCAA=&TipoDato=Presupuestos&Ejercicio=2019&TipoPublicacion=Access) and [Metodología Base de datos Access](https://serviciostelematicosext.hacienda.gob.es/SGCAL/CONPREL/Consulta/DescargaFicheroMetodologico?idFichero=809).  The data published is in Microsoft Access format.
 
 We, at Gobierto, have followed these steps to convert it to SQL, which is a better format to
 distribute the data.
