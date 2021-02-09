@@ -12,7 +12,7 @@ class Reporter
 
   def report
     places_ids = INE::Places::Place.all.map(&:id).map(&:to_i).sort
-    (2020..2020).each do |year|
+    (2010..2020).each do |year|
       puts "Reporting #{year}"
       found = []
       results = connection.execute("select * from tb_inventario_#{year} where codente like '%AA000'")
