@@ -1,16 +1,20 @@
 class DataImport
 
-  def initialize(database, what)
+  def initialize(database, what, year = nil)
     raise 'Missing database name' if database.blank?
     raise 'Invalid type option' unless %{ planned executed }.include?(what)
 
     @database = database
     @what = what
+    @year = year
   end
 
   def import_in_database
     Dir.foreach(Rails.root.join('data/presupuestos_municipales')) do |directory|
       next if ['.', '..'].include?(directory)
+      if @year
+        next if directory.to_s != @year.to_s
+      end
       year = directory
 
       directory = Rails.root.join("data/presupuestos_municipales/#{year}")

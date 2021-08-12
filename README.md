@@ -23,6 +23,8 @@ do it using `createdb`. Example:
 5 - Run the script:
   - To load the planned data: `$ bin/rails runner import.rb budgets-planned planned`
   - To load the executed data: `$ bin/rails runner import.rb budgets-executed executed`
+  - To load the planned data for a specific year: `$ bin/rails runner import.rb budgets-planned planned 2021`
+  - To load the executed data for a specific year: `$ bin/rails runner import.rb budgets-executed executed 2021`
 
 ## Understanding the data
 
