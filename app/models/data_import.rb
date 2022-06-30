@@ -56,7 +56,7 @@ class DataImport
     sql_file = dir + File.basename(file, '.gz')
     first_line = File.readlines(sql_file).first.chomp
     if not first_line =~ /begin/i
-      import_speedup(sql_file,'BEGIN;', 'COMMIT;')
+      import_speedup(sql_file,"BEGIN; DROP INDEX IF EXISTS #{table_name}tipreig; ", 'COMMIT;')
     end
 
     %x(cat #{sql_file} | psql #{@database})
