@@ -16,3 +16,6 @@
 config/database.yml
 
 .rbenv-vars
+
+
+vendor/bundle
