@@ -10,7 +10,7 @@ end
 
 database = ARGV[0].strip
 what = ARGV[1].strip
-year = ARGV[2].strip
+year = ARGV[2]&.strip
 
 importer = DataImport.new(database, what, year)
 importer.import_in_database
