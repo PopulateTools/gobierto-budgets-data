@@ -23,7 +23,7 @@ class DataImport
       if File.directory?(full_path_directory)
         import_year_data(full_path_directory, current_year)
       else
-        raise "[ERROR] Directory #{directory} does not exist"
+        puts "[ERROR] Directory #{directory} does not exist"
       end
     end
   end
