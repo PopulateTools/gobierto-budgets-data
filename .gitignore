@@ -14,3 +14,5 @@
 
 # Ignore database
 config/database.yml
+
+.rbenv-vars
