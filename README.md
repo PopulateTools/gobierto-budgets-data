@@ -13,14 +13,16 @@ into a Postgres database. The data is from years 2010 to 2020 and includes plann
 
 2 - Create a file `config/database.yml`. You can base it on `config/database.yml.example`
 
-3 - Run `bundle install`
+3 - Create the file `.rbenv-vars` and add `RAILS_ENV=development` to it.
 
-4 - Create two databases, one for planned data, and other for executed data. In postgres you can
+4 - Run `bundle install`
+
+5 - Create two databases, one for planned data, and other for executed data. In postgres you can
 do it using `createdb`. Example:
   - `createdb budgets-planned`
   - `createdb budgets-executed`
 
-5 - Run the script:
+6 - Run the script:
   - To load the planned data: `$ bin/rails runner import.rb budgets-planned planned`
   - To load the executed data: `$ bin/rails runner import.rb budgets-executed executed`
   - To load the planned data for a specific year: `$ bin/rails runner import.rb budgets-planned planned 2021`
