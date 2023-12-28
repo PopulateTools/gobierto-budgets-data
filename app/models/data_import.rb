@@ -70,7 +70,7 @@ class DataImport
 
   def db
     @db ||= begin
-      ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).find{ |c| c.name == @database }
+      ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations.configs_for(env_name: Rails.env).find{ |c| c.name == @database.underscore }
       ActiveRecord::Base.connection
     end
   end
