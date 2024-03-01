@@ -240,7 +240,7 @@ GEM
     websocket-extensions (0.1.5)
     wirb (2.2.2)
       paint (>= 0.9, < 3.0)
-    yard (0.9.35)
+    yard (0.9.36)
     zeitwerk (2.6.13)
 
 PLATFORMS
