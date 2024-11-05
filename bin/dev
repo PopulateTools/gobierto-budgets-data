@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if ! command -v foreman &> /dev/null
+then
+  echo "Installing foreman..."
+  gem install foreman
+fi
+
+if [[ $1 = "--sidekiq" ]] || [[ $1 = "-s" ]]; then
+  foreman start -f Procfile_with_sidekiq.dev
+else
+  foreman start -f Procfile.dev
+fi
