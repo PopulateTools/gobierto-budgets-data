@@ -5,6 +5,7 @@ gem "rails"
 gem "bootsnap"
 gem 'listen'
 gem "ine-places"
+gem "csv"
 
 group :development, :test do
   gem 'byebug'
