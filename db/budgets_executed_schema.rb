@@ -92,19 +92,6 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.string "nombre", limit: 125
   end
 
-  create_table "tb_cuentasEconomica_2023", id: false, force: :cascade do |t|
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.string "nombre", limit: 125
-  end
-
-  create_table "tb_cuentasEconomica_2025", id: false, force: :cascade do |t|
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.string "nombre", limit: 125
-    t.index ["tipreig"], name: "tb_cuentasEconomicatipreig"
-  end
-
   create_table "tb_cuentasProgramas_2010", id: false, force: :cascade do |t|
     t.string "cdfgr", limit: 3
     t.string "nombre", limit: 125
@@ -170,15 +157,54 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.string "nombre", limit: 125
   end
 
-  create_table "tb_cuentasProgramas_2023", id: false, force: :cascade do |t|
-    t.string "cdfgr", limit: 6
+  create_table "tb_cuentasRemanente_2010", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
     t.string "nombre", limit: 125
   end
 
-  create_table "tb_cuentasProgramas_2025", id: false, force: :cascade do |t|
-    t.string "cdfgr", limit: 6
+  create_table "tb_cuentasRemanente_2011", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
     t.string "nombre", limit: 125
-    t.index ["cdfgr"], name: "tb_cuentasProgramascdfgr"
+  end
+
+  create_table "tb_cuentasRemanente_2012", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
+  end
+
+  create_table "tb_cuentasRemanente_2013", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
+  end
+
+  create_table "tb_cuentasRemanente_2014", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
+  end
+
+  create_table "tb_cuentasRemanente_2015", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
+  end
+
+  create_table "tb_cuentasRemanente_2018", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
+  end
+
+  create_table "tb_cuentasRemanente_2019", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
+  end
+
+  create_table "tb_cuentasRemanente_2020", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
+  end
+
+  create_table "tb_cuentasRemanente_2022", id: false, force: :cascade do |t|
+    t.string "cdrmte", limit: 6
+    t.string "nombre", limit: 125
   end
 
   create_table "tb_economica_2010", id: false, force: :cascade do |t|
@@ -186,7 +212,10 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.decimal "idente", precision: 15, scale: 2
     t.string "tipreig", limit: 1
     t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
+    t.decimal "importer", precision: 15, scale: 2
+    t.decimal "imported", precision: 15, scale: 2
+    t.decimal "importel", precision: 15, scale: 2
+    t.decimal "importec", precision: 15, scale: 2
   end
 
   create_table "tb_economica_2011", id: false, force: :cascade do |t|
@@ -194,7 +223,10 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.decimal "idente", precision: 15, scale: 2
     t.string "tipreig", limit: 1
     t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
+    t.decimal "importer", precision: 15, scale: 2
+    t.decimal "imported", precision: 15, scale: 2
+    t.decimal "importel", precision: 15, scale: 2
+    t.decimal "importec", precision: 15, scale: 2
   end
 
   create_table "tb_economica_2012", id: false, force: :cascade do |t|
@@ -266,7 +298,10 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.decimal "idente", precision: 15, scale: 2
     t.string "tipreig", limit: 1
     t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
+    t.decimal "imported", precision: 15, scale: 2
+    t.decimal "importer", precision: 15, scale: 2
+    t.decimal "importel", precision: 15, scale: 2
+    t.decimal "importec", precision: 15, scale: 2
   end
 
   create_table "tb_economica_2021", id: false, force: :cascade do |t|
@@ -282,37 +317,10 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.decimal "idente", precision: 15, scale: 2
     t.string "tipreig", limit: 1
     t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_economica_2023", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.decimal "idente", precision: 15, scale: 2
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_economica_2025", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.decimal "idente", precision: 15, scale: 2
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_economica_cons_2010", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_economica_cons_2011", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
+    t.decimal "imported", precision: 15, scale: 2
+    t.decimal "importer", precision: 15, scale: 2
+    t.decimal "importel", precision: 15, scale: 2
+    t.decimal "importec", precision: 15, scale: 2
   end
 
   create_table "tb_economica_cons_2012", id: false, force: :cascade do |t|
@@ -375,7 +383,10 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.decimal "id", precision: 15, scale: 2
     t.string "tipreig", limit: 1
     t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
+    t.decimal "imported", precision: 15, scale: 2
+    t.decimal "importer", precision: 15, scale: 2
+    t.decimal "importel", precision: 15, scale: 2
+    t.decimal "importec", precision: 15, scale: 2
   end
 
   create_table "tb_economica_cons_2021", id: false, force: :cascade do |t|
@@ -389,21 +400,10 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.decimal "id", precision: 15, scale: 2
     t.string "tipreig", limit: 1
     t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_economica_cons_2023", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_economica_cons_2025", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "tipreig", limit: 1
-    t.string "cdcta", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
+    t.decimal "imported", precision: 15, scale: 2
+    t.decimal "importer", precision: 15, scale: 2
+    t.decimal "importel", precision: 15, scale: 2
+    t.decimal "importec", precision: 15, scale: 2
   end
 
   create_table "tb_funcional_2010", id: false, force: :cascade do |t|
@@ -510,36 +510,6 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.decimal "importe", precision: 15, scale: 2
   end
 
-  create_table "tb_funcional_2023", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.decimal "idente", precision: 15, scale: 2
-    t.string "cdcta", limit: 6
-    t.string "cdfgr", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_funcional_2025", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.decimal "idente", precision: 15, scale: 2
-    t.string "cdcta", limit: 6
-    t.string "cdfgr", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_funcional_cons_2010", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "cdcta", limit: 6
-    t.string "cdfgr", limit: 3
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_funcional_cons_2011", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "cdcta", limit: 6
-    t.string "cdfgr", limit: 3
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
   create_table "tb_funcional_cons_2012", id: false, force: :cascade do |t|
     t.decimal "id", precision: 15, scale: 2
     t.string "cdcta", limit: 6
@@ -611,20 +581,6 @@ ActiveRecord::Schema[8.0].define(version: 0) do
   end
 
   create_table "tb_funcional_cons_2022", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "cdcta", limit: 6
-    t.string "cdfgr", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_funcional_cons_2023", id: false, force: :cascade do |t|
-    t.decimal "id", precision: 15, scale: 2
-    t.string "cdcta", limit: 6
-    t.string "cdfgr", limit: 6
-    t.decimal "importe", precision: 15, scale: 2
-  end
-
-  create_table "tb_funcional_cons_2025", id: false, force: :cascade do |t|
     t.decimal "id", precision: 15, scale: 2
     t.string "cdcta", limit: 6
     t.string "cdfgr", limit: 6
@@ -787,27 +743,59 @@ ActiveRecord::Schema[8.0].define(version: 0) do
     t.string "estado", limit: 1
   end
 
-  create_table "tb_inventario_2023", id: false, force: :cascade do |t|
+  create_table "tb_remanente_2010", id: false, force: :cascade do |t|
     t.decimal "id", precision: 15, scale: 2
-    t.string "codbdgel", limit: 10
-    t.string "nombreppal", limit: 70
     t.decimal "idente", precision: 15, scale: 2
-    t.string "codente", limit: 10
-    t.string "nombreente", limit: 70
-    t.decimal "nsec", precision: 15, scale: 2
-    t.decimal "poblacion", precision: 15, scale: 2
-    t.string "estado", limit: 1
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
   end
 
-  create_table "tb_inventario_2025", id: false, force: :cascade do |t|
+  create_table "tb_remanente_2011", id: false, force: :cascade do |t|
     t.decimal "id", precision: 15, scale: 2
-    t.string "codbdgel", limit: 10
-    t.string "nombreppal", limit: 70
     t.decimal "idente", precision: 15, scale: 2
-    t.string "codente", limit: 10
-    t.string "nombreente", limit: 70
-    t.decimal "nsec", precision: 15, scale: 2
-    t.decimal "poblacion", precision: 15, scale: 2
-    t.string "estado", limit: 1
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
+  end
+
+  create_table "tb_remanente_2012", id: false, force: :cascade do |t|
+    t.decimal "id", precision: 15, scale: 2
+    t.decimal "idente", precision: 15, scale: 2
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
+  end
+
+  create_table "tb_remanente_2013", id: false, force: :cascade do |t|
+    t.decimal "id", precision: 15, scale: 2
+    t.decimal "idente", precision: 15, scale: 2
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
+  end
+
+  create_table "tb_remanente_2014", id: false, force: :cascade do |t|
+    t.decimal "id", precision: 15, scale: 2
+    t.decimal "idente", precision: 15, scale: 2
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
+  end
+
+  create_table "tb_remanente_2015", id: false, force: :cascade do |t|
+    t.decimal "id", precision: 15, scale: 2
+    t.decimal "idente", precision: 15, scale: 2
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
+  end
+
+  create_table "tb_remanente_2020", id: false, force: :cascade do |t|
+    t.decimal "id", precision: 15, scale: 2
+    t.decimal "idente", precision: 15, scale: 2
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
+  end
+
+  create_table "tb_remanente_2022", id: false, force: :cascade do |t|
+    t.decimal "id", precision: 15, scale: 2
+    t.decimal "idente", precision: 15, scale: 2
+    t.string "cdrmte", limit: 6
+    t.decimal "importe", precision: 15, scale: 2
   end
 end
