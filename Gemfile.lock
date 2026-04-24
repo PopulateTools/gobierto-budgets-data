@@ -95,7 +95,7 @@ GEM
     debugging (2.1.0)
       paint (>= 0.9, < 3.0)
     drb (2.2.3)
-    erb (5.1.1)
+    erb (6.0.1.1)
     erubi (1.13.1)
     every_day_irb (2.2.0)
       cd (~> 1.0)
