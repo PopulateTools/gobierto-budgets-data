@@ -91,7 +91,7 @@ GEM
       yard (~> 0.9.11)
     crass (1.0.6)
     csv (3.3.5)
-    date (3.4.1)
+    date (3.5.1)
     debugging (2.1.0)
       paint (>= 0.9, < 3.0)
     drb (2.2.3)
@@ -169,7 +169,7 @@ GEM
     mini_portile2 (2.8.9)
     minitest (5.26.0)
     msgpack (1.8.0)
-    net-imap (0.5.12)
+    net-imap (0.5.14)
       date
       net-protocol
     net-pop (0.1.2)
@@ -270,7 +270,7 @@ GEM
       ffi
     stringio (3.1.7)
     thor (1.4.0)
-    timeout (0.4.3)
+    timeout (0.6.1)
     tsort (0.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
