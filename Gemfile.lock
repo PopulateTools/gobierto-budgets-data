@@ -89,7 +89,7 @@ GEM
     connection_pool (2.5.4)
     core_docs (0.9.11)
       yard (~> 0.9.11)
-    crass (1.0.6)
+    crass (1.0.7)
     csv (3.3.5)
     date (3.5.1)
     debugging (2.1.0)
