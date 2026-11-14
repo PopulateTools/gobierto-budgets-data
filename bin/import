@@ -3,7 +3,8 @@
 # a Postgres database, one table per file and year: tb_economica -> tb_economica_2024.
 #
 # Connection settings come from the standard PG* environment variables
-# (PGHOST, PGUSER, PGPASSWORD...); the database argument can also be a URL.
+# (PGHOST, PGUSER, PGPASSWORD...), read from .env when the file exists;
+# the database argument can also be a URL.
 set -euo pipefail
 
 usage() {
@@ -39,7 +40,14 @@ END
 SQL
 }
 
-data_dir="$(cd "$(dirname "$0")/.." && pwd)/data/presupuestos_municipales"
+root_dir=$(cd "$(dirname "$0")/.." && pwd)
+data_dir="$root_dir/data/presupuestos_municipales"
+
+if [[ -f $root_dir/.env ]]; then
+  set -a
+  source "$root_dir/.env"
+  set +a
+fi
 
 for year_dir in "$data_dir"/[0-9][0-9][0-9][0-9]; do
   year=$(basename "$year_dir")

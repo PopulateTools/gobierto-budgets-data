@@ -16,7 +16,8 @@ postgresql-client` on Debian/Ubuntu.
   - `createdb budgets-executed`
 
 The scripts connect with `psql`, so they use the standard `PGHOST`, `PGPORT`, `PGUSER` and
-`PGPASSWORD` environment variables. The database argument can also be a connection URL.
+`PGPASSWORD` environment variables. `bin/import` reads them from a `.env` file in the repository root
+when it exists. The database argument can also be a connection URL.
 
 ### Import
 
