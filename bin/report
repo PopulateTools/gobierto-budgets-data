@@ -14,7 +14,7 @@ gemfile do
   gem "csv"
 end
 
-require "ine/places"
+require "ine"
 require "csv"
 require "fileutils"
 
@@ -26,7 +26,7 @@ root = File.expand_path("..", __dir__)
 
 population = CSV.read(File.join(root, "docs/population.csv"), headers: true)
                 .to_h { |row| [row["place_id"].to_i, row["population"].to_i] }
-places_ids = INE::Places::Place.all.map { |place| place.id.to_i }
+places_ids = INE::Places::Place.all.map { |place| place.id.to_i }.sort
 
 years = connection.exec("SELECT tablename FROM pg_tables WHERE tablename ~ '^tb_inventario_[0-9]{4}$' ORDER BY 1")
                   .map { |row| row["tablename"].delete_prefix("tb_inventario_") }

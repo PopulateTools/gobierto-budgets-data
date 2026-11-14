@@ -35,6 +35,7 @@ for year_dir in "$data_dir"/[0-9][0-9][0-9][0-9]; do
     table=$(basename "$file" .sql.gz)
     echo "- $year: $table -> ${table}_$year"
     {
+      echo "SET client_min_messages = warning;"
       echo "BEGIN;"
       gzip -dc "$file"
       echo "DROP TABLE IF EXISTS \"${table}_$year\" CASCADE;"
