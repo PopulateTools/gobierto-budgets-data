@@ -19,6 +19,26 @@ only_year=${3:-}
 [[ $kind == planned || $kind == executed ]] || usage
 [[ -z $only_year || $only_year =~ ^[0-9]{4}$ ]] || usage
 
+# Gobierto reads the budgets of one entity at a time, joining by idente and
+# filtering tb_inventario by codente: without these indexes each query scans
+# the whole table.
+create_lookup_indexes() {
+  local table=$1
+  cat <<SQL
+DO \$\$
+DECLARE column_name name;
+BEGIN
+  FOR column_name IN
+    SELECT attname FROM pg_attribute
+    WHERE attrelid = '"$table"'::regclass AND attname IN ('idente', 'codente') AND NOT attisdropped
+  LOOP
+    EXECUTE format('CREATE INDEX ON %I (%I)', '$table', column_name);
+  END LOOP;
+END
+\$\$;
+SQL
+}
+
 data_dir="$(cd "$(dirname "$0")/.." && pwd)/data/presupuestos_municipales"
 
 for year_dir in "$data_dir"/[0-9][0-9][0-9][0-9]; do
@@ -40,6 +60,7 @@ for year_dir in "$data_dir"/[0-9][0-9][0-9][0-9]; do
       gzip -dc "$file"
       echo "DROP TABLE IF EXISTS \"${table}_$year\" CASCADE;"
       echo "ALTER TABLE \"$table\" RENAME TO \"${table}_$year\";"
+      create_lookup_indexes "${table}_$year"
       echo "COMMIT;"
       echo "ANALYZE \"${table}_$year\";"
     } | psql -X -q -v ON_ERROR_STOP=1 -d "$database"

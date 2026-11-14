@@ -25,6 +25,8 @@ The scripts connect with `psql`, so they use the standard `PGHOST`, `PGPORT`, `P
   - A single year: `bin/import budgets-planned planned 2025`
 
 Each file is loaded in its own transaction with `COPY`, so a full load takes a couple of minutes.
+Tables get indexes on `idente` and `codente`, the columns Gobierto uses to read one entity at a
+time.
 
 ### Add or update a year
 
