@@ -21,3 +21,5 @@ config/database.yml
 vendor/bundle
 
 /config/master.key
+
+.env
