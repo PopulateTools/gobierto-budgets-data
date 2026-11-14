@@ -1,48 +1,58 @@
 # Gobierto budgets data
 
 This repository contains the data and the scripts needed to load the municipalities data from Spain
-into a Postgres database. The data is from years 2010 to 2023 and includes planned and executed.
-
-**Important**: the data contained in this repository has been updated on 01/07/2023.
+into a Postgres database. The data is from years 2010 to 2025 and includes planned (2010-2025) and
+executed (2010-2024).
 
 ## How to load the data
 
 ### Setup
 
-1 - Install Ruby (version [from here](https://github.com/PopulateTools/gobierto-budgets-data/blob/master/.ruby-version))
+1 - Install the dependencies: `brew bundle` on macOS (see `Brewfile`), or `apt install mdbtools
+postgresql-client` on Debian/Ubuntu.
 
-2 - Create a file `config/database.yml`. You can base it on `config/database.yml.example`
-
-3 - Create the file `.rbenv-vars` and add `RAILS_ENV=development` to it.
-
-4 - Run `bundle install`
-
-5 - Create two databases, one for planned data, and other for executed data. In postgres you can
-do it using `createdb`. Example:
+2 - Create two databases, one for planned data, and other for executed data:
   - `createdb budgets-planned`
   - `createdb budgets-executed`
 
-6 - Run the script:
-  - To load the planned data: `$ bin/rails runner import.rb budgets-planned planned`
-  - To load the executed data: `$ bin/rails runner import.rb budgets-executed executed`
-  - To load the planned data for a specific year: `$ bin/rails runner import.rb budgets-planned planned 2021`
-  - To load the executed data for a specific year: `$ bin/rails runner import.rb budgets-executed executed 2021`
+The scripts connect with `psql`, so they use the standard `PGHOST`, `PGPORT`, `PGUSER` and
+`PGPASSWORD` environment variables. The database argument can also be a connection URL.
+
+### Import
+
+  - Planned data: `bin/import budgets-planned planned`
+  - Executed data: `bin/import budgets-executed executed`
+  - A single year: `bin/import budgets-planned planned 2025`
+
+Each file is loaded in its own transaction with `COPY`, so a full load takes a couple of minutes.
+
+### Add or update a year
+
+_Ministerio de Hacienda_ publishes each year as a ZIP with a Microsoft Access database, separately
+for planned budgets (_Presupuestos_, e.g. `Presupuestos2025.zip`) and executed budgets
+(_Liquidaciones_). Years are sometimes republished with more entities, so the same year can be
+converted again.
+
+    bin/convert ~/Desktop/Presupuestos2025.zip 2025 planned
+
+`bin/convert` reads the Access database with [mdbtools](https://github.com/mdbtools/mdbtools),
+replaces the files in `data/presupuestos_municipales/<year>/<planned|executed>/` and uses a
+temporary Postgres database as scratch space. Then load the year with `bin/import` and commit the
+new files.
+
+### Report
+
+`bin/report budgets-planned` writes `docs/<year>.md` with the municipalities without a budget in
+each year. It needs Ruby and installs its gems on the first run.
 
 ## Understanding the data
 
 _Ministerio de Hacienda y Administraciones Públicas_ publishes in their website [the data](https://serviciostelematicosext.hacienda.gob.es/SGFAL/CONPREL) of municipalities budgets, both the planned budget and the executed one. They have a couple of methodology notes in case you are interested in: [Nota Metodológica](https://serviciostelematicosext.hacienda.gob.es/SGCAL/CONPREL/Consulta/DescargaFichero?CCAA=&TipoDato=Presupuestos&Ejercicio=2019&TipoPublicacion=Access) and [Metodología Base de datos Access](https://serviciostelematicosext.hacienda.gob.es/SGCAL/CONPREL/Consulta/DescargaFicheroMetodologico?idFichero=809).  The data published is in Microsoft Access format.
 
-We, at Gobierto, have followed these steps to convert it to SQL, which is a better format to
-distribute the data.
-
-1 - Fetch all the data from 2010 to 2020. There are separated files for each year and for planned
-and executed.
-
-2 - Using an external application, we have converted the data to Postgres format.
-
-3 - We have put each SQL file, compressed in GZip format, into a folder in
-`data/presupuestos_municipales` with the name of the yar. There are two sub-folders named
-`executed/` and `planned/`.
+We convert each Access database to SQL with `bin/convert`, which is a better format to distribute
+the data. Each table is stored as a gzipped SQL file with a `CREATE TABLE` and a `COPY` block, in
+`data/presupuestos_municipales/<year>/<planned|executed>/`. Leading and trailing spaces in text
+columns are removed during the conversion. Every file can also be loaded with plain `psql`.
 
 There are five main tables. We are not going to describe them completely, but if you want a deeper
 description we recommend you to read the documentation mentioned above.
