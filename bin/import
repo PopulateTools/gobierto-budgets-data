@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Loads data/presupuestos_municipales/<year>/<planned|executed>/*.sql.gz into
+# a Postgres database, one table per file and year: tb_economica -> tb_economica_2024.
+#
+# Connection settings come from the standard PG* environment variables
+# (PGHOST, PGUSER, PGPASSWORD...); the database argument can also be a URL.
+set -euo pipefail
+
+usage() {
+  echo "Usage: bin/import <database name or URL> <planned|executed> [year]" >&2
+  echo "Example: bin/import budgets-planned planned 2025" >&2
+  exit 1
+}
+
+[[ $# -eq 2 || $# -eq 3 ]] || usage
+database=$1
+kind=$2
+only_year=${3:-}
+[[ $kind == planned || $kind == executed ]] || usage
+[[ -z $only_year || $only_year =~ ^[0-9]{4}$ ]] || usage
+
+data_dir="$(cd "$(dirname "$0")/.." && pwd)/data/presupuestos_municipales"
+
+for year_dir in "$data_dir"/[0-9][0-9][0-9][0-9]; do
+  year=$(basename "$year_dir")
+  [[ -z $only_year || $year == "$only_year" ]] || continue
+
+  files_dir="$year_dir/$kind"
+  if [[ ! -d $files_dir ]]; then
+    echo "- No $kind data for $year"
+    continue
+  fi
+
+  for file in "$files_dir"/tb_*.sql.gz; do
+    table=$(basename "$file" .sql.gz)
+    echo "- $year: $table -> ${table}_$year"
+    {
+      echo "BEGIN;"
+      gzip -dc "$file"
+      echo "DROP TABLE IF EXISTS \"${table}_$year\" CASCADE;"
+      echo "ALTER TABLE \"$table\" RENAME TO \"${table}_$year\";"
+      echo "COMMIT;"
+      echo "ANALYZE \"${table}_$year\";"
+    } | psql -X -q -v ON_ERROR_STOP=1 -d "$database"
+  done
+done

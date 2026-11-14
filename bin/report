@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# Writes docs/<year>.md with the municipalities that have no budget in the
+# given database, grouped by province and sorted by population.
+#
+# Usage: bin/report <database name or URL>
+# Connection settings come from the standard PG* environment variables.
+
+require "bundler/inline"
+
+gemfile do
+  source "https://rubygems.org"
+  gem "pg"
+  gem "ine-places"
+  gem "csv"
+end
+
+require "ine/places"
+require "csv"
+require "fileutils"
+
+abort "Usage: bin/report <database name or URL>" unless ARGV.length == 1
+
+database = ARGV[0].strip
+connection = PG.connect(database.include?("://") ? database : { dbname: database })
+root = File.expand_path("..", __dir__)
+
+population = CSV.read(File.join(root, "docs/population.csv"), headers: true)
+                .to_h { |row| [row["place_id"].to_i, row["population"].to_i] }
+places_ids = INE::Places::Place.all.map { |place| place.id.to_i }
+
+years = connection.exec("SELECT tablename FROM pg_tables WHERE tablename ~ '^tb_inventario_[0-9]{4}$' ORDER BY 1")
+                  .map { |row| row["tablename"].delete_prefix("tb_inventario_") }
+
+years.each do |year|
+  puts "Reporting #{year}"
+  found = connection.exec("SELECT codente FROM tb_inventario_#{year} WHERE codente LIKE '%AA000'")
+                    .map { |row| row["codente"].delete_suffix("AA000").to_i }
+
+  missing_places = (places_ids - found).map { |place_id| INE::Places::Place.find(place_id) }
+  lines = missing_places.group_by(&:province).flat_map do |province, places|
+    ["## #{province.name}"] +
+      places.sort_by { |place| -population[place.id.to_i].to_i }.map { |place| "- #{place.name}" }
+  end
+
+  FileUtils.mkdir_p(File.join(root, "docs"))
+  File.write(File.join(root, "docs/#{year}.md"), lines.join("\n"))
+end
