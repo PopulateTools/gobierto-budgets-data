@@ -1,0 +1,6 @@
+scripts:
+  setup: |
+    for file in config/database.yml config/master.key .rbenv-vars; do
+      if [ -f "$ORCA_ROOT_PATH/$file" ]; then cp -p "$ORCA_ROOT_PATH/$file" "$ORCA_WORKTREE_PATH/$file"; fi
+    done
+    bundle install
