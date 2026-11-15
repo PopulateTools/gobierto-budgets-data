@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Converts a CONPREL Access database (.accdb or .mdb, or a .zip containing one)
+# into the files bin/import loads:
+#   data/presupuestos_municipales/<year>/<planned|executed>/<table>.sql.gz
+#
+# Existing files of that year and kind are replaced.
+# Needs mdbtools (brew install mdbtools / apt install mdbtools) and a Postgres
+# server reachable with the standard PG* environment variables, where a
+# temporary database is created as scratch space.
+set -euo pipefail
+
+usage() {
+  echo "Usage: bin/convert <file.zip|file.accdb|file.mdb> <year> <planned|executed>" >&2
+  exit 1
+}
+
+[[ $# -eq 3 ]] || usage
+source_file=$1
+year=$2
+kind=$3
+[[ -f $source_file ]] || { echo "File not found: $source_file" >&2; exit 1; }
+[[ $year =~ ^[0-9]{4}$ ]] || usage
+[[ $kind == planned || $kind == executed ]] || usage
+
+for command in mdb-tables mdb-schema mdb-export psql createdb dropdb unzip gzip; do
+  command -v "$command" > /dev/null || { echo "Missing command: $command" >&2; exit 1; }
+done
+
+root_dir=$(cd "$(dirname "$0")/.." && pwd)
+source "$root_dir/lib/table_file.sh"
+
+# Lookup tables of autonomous communities and provinces, not used by Gobierto
+SKIPPED_TABLES=" tb_CCAA tb_Provincias "
+
+work_dir=$(mktemp -d)
+scratch_database="budgets_convert_$$"
+cleanup() {
+  dropdb --if-exists "$scratch_database"
+  rm -rf "$work_dir"
+}
+trap cleanup EXIT
+
+case $source_file in
+  *.zip)
+    unzip -q "$source_file" -d "$work_dir"
+    access_file=$(find "$work_dir" -type f \( -iname '*.accdb' -o -iname '*.mdb' \) | head -n 1)
+    [[ -n $access_file ]] || { echo "No .accdb or .mdb file inside $source_file" >&2; exit 1; }
+    ;;
+  *)
+    access_file=$source_file
+    ;;
+esac
+
+createdb "$scratch_database"
+psql_scratch() { psql -X -q -v ON_ERROR_STOP=1 -d "$scratch_database" "$@"; }
+
+output_dir="$root_dir/data/presupuestos_municipales/$year/$kind"
+mkdir -p "$output_dir"
+rm -f "$output_dir"/tb_*.sql.gz
+
+mdb-tables -1 "$access_file" | while read -r table; do
+  [[ $SKIPPED_TABLES == *" $table "* ]] && continue
+
+  echo "- $table ($(mdb-count "$access_file" "$table") rows)"
+
+  # mdb-schema lowercases names: create the table and rename it to the Access name
+  lowercase_table=$(echo "$table" | tr '[:upper:]' '[:lower:]')
+  mdb-schema --no-indexes --no-relations --no-not-null -T "$table" "$access_file" postgres | psql_scratch
+  if [[ $lowercase_table != "$table" ]]; then
+    psql_scratch -c "ALTER TABLE \"$lowercase_table\" RENAME TO \"$table\""
+  fi
+
+  # Amounts and identifiers have always been published as NUMERIC(15,2)
+  psql_scratch -c "
+    DO \$\$
+    DECLARE column_name name;
+    BEGIN
+      FOR column_name IN
+        SELECT attname FROM pg_attribute
+        WHERE attrelid = '\"$table\"'::regclass AND attnum > 0 AND NOT attisdropped
+          AND atttypid IN ('numeric'::regtype, 'int2'::regtype, 'int4'::regtype, 'int8'::regtype,
+                           'float4'::regtype, 'float8'::regtype)
+      LOOP
+        EXECUTE format('ALTER TABLE %I ALTER COLUMN %I TYPE NUMERIC(15,2)', '$table', column_name);
+      END LOOP;
+    END
+    \$\$"
+
+  mdb-export -H "$access_file" "$table" | psql_scratch -c "\\copy \"$table\" FROM pstdin CSV"
+
+  write_table_file "$scratch_database" "$table" "$output_dir/$table.sql.gz"
+done
+
+echo "Written to $output_dir"

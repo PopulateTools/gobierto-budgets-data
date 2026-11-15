@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Loads data/presupuestos_municipales/<year>/<planned|executed>/*.sql.gz into
+# a Postgres database, one table per file and year: tb_economica -> tb_economica_2024.
+#
+# Connection settings come from the standard PG* environment variables
+# (PGHOST, PGUSER, PGPASSWORD...), read from .env when the file exists;
+# the database argument can also be a URL.
+set -euo pipefail
+
+usage() {
+  echo "Usage: bin/import <database name or URL> <planned|executed> [year]" >&2
+  echo "Example: bin/import budgets-planned planned 2025" >&2
+  exit 1
+}
+
+[[ $# -eq 2 || $# -eq 3 ]] || usage
+database=$1
+kind=$2
+only_year=${3:-}
+[[ $kind == planned || $kind == executed ]] || usage
+[[ -z $only_year || $only_year =~ ^[0-9]{4}$ ]] || usage
+
+# Gobierto reads the budgets of one entity at a time, joining by idente and
+# filtering tb_inventario by codente: without these indexes each query scans
+# the whole table.
+create_lookup_indexes() {
+  local table=$1
+  cat <<SQL
+DO \$\$
+DECLARE column_name name;
+BEGIN
+  FOR column_name IN
+    SELECT attname FROM pg_attribute
+    WHERE attrelid = '"$table"'::regclass AND attname IN ('idente', 'codente') AND NOT attisdropped
+  LOOP
+    EXECUTE format('CREATE INDEX ON %I (%I)', '$table', column_name);
+  END LOOP;
+END
+\$\$;
+SQL
+}
+
+root_dir=$(cd "$(dirname "$0")/.." && pwd)
+data_dir="$root_dir/data/presupuestos_municipales"
+
+if [[ -f $root_dir/.env ]]; then
+  set -a
+  source "$root_dir/.env"
+  set +a
+fi
+
+for year_dir in "$data_dir"/[0-9][0-9][0-9][0-9]; do
+  year=$(basename "$year_dir")
+  [[ -z $only_year || $year == "$only_year" ]] || continue
+
+  files_dir="$year_dir/$kind"
+  if [[ ! -d $files_dir ]]; then
+    echo "- No $kind data for $year"
+    continue
+  fi
+
+  for file in "$files_dir"/tb_*.sql.gz; do
+    table=$(basename "$file" .sql.gz)
+    echo "- $year: $table -> ${table}_$year"
+    {
+      echo "SET client_min_messages = warning;"
+      echo "BEGIN;"
+      gzip -dc "$file"
+      echo "DROP TABLE IF EXISTS \"${table}_$year\" CASCADE;"
+      echo "ALTER TABLE \"$table\" RENAME TO \"${table}_$year\";"
+      create_lookup_indexes "${table}_$year"
+      echo "COMMIT;"
+      echo "ANALYZE \"${table}_$year\";"
+    } | psql -X -q -v ON_ERROR_STOP=1 -d "$database"
+  done
+done
